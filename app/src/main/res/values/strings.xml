@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MyLittleBrick</string>
+
+    <string name="arch_button_desc">Archiwizuj</string>
+    <string name="export_button_desc">Eksportuj</string>
+    <string name="add_new_project_desc">Dodaj nowy projekt</string>
+
+    <string name="hint_base_url">Strona źródłowa</string>
+    <string name="hint_id">Identyfikator projektu</string>]
+    <string name="hint_name">Twoja nazwa projektu</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
