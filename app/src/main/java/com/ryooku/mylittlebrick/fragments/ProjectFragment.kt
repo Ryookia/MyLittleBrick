@@ -51,7 +51,7 @@ class ProjectFragment : Fragment(), ItemListener {
         var count = projectDTO!!.itemList!![position].collectedCount
         if (count == null) count = 1 else count++
         projectDTO!!.itemList!![position].collectedCount = count
-        (activity as MainActivity).database!!.changeItemCount(count, projectDTO!!.itemList!![position].id!!)
+        (activity as MainActivity).database!!.changeItemCount(projectDTO!!.itemList!![position].id!!, count)
         adapter!!.notifyDataSetChanged()
     }
 
@@ -59,7 +59,7 @@ class ProjectFragment : Fragment(), ItemListener {
         var count = projectDTO!!.itemList!![position].collectedCount
         if (count == null) count = 0 else count--
         projectDTO!!.itemList!![position].collectedCount = count
-        (activity as MainActivity).database!!.changeItemCount(count, projectDTO!!.itemList!![position].id!!)
+        (activity as MainActivity).database!!.changeItemCount(projectDTO!!.itemList!![position].id!!, count)
         adapter!!.notifyDataSetChanged()
     }
 

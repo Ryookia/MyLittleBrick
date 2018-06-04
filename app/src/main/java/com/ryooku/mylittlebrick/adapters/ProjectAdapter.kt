@@ -33,15 +33,15 @@ class ProjectAdapter(private val itemList: List<ItemDTO>, private val context: C
         holder.desiredCount.text = item.desiredCount.toString()
         holder.currentCount.text = item.collectedCount.toString()
         holder.color.text = item.color.toString()
-        holder.id.text = item.itemId.toString()
+        holder.id.text = item.id.toString()
         holder.plusButton.setOnClickListener { listener.increase(position) }
         holder.minusButton.setOnClickListener { listener.decrease(position) }
         holder.layout.setOnClickListener { listener.itemSelected(position) }
 
-        if (item.collectedCount == 0) holder.minusButton.visibility = View.GONE
+        if (item.collectedCount == 0) holder.minusButton.visibility = View.INVISIBLE
         else holder.minusButton.visibility = View.VISIBLE
 
-        if (item.collectedCount == item.desiredCount) holder.plusButton.visibility = View.GONE
+        if (item.collectedCount == item.desiredCount) holder.plusButton.visibility = View.INVISIBLE
         else holder.plusButton.visibility = View.VISIBLE
 
         val value = item.collectedCount!! / item.desiredCount!!.toFloat()
