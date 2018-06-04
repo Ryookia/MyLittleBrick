@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFF481</color>
-    <color name="colorPrimaryDark">#7F7A41</color>
-    <color name="colorAccent">#4300FF</color>
+    <color name="colorPrimaryDark">#7c5b37</color>
+    <color name="colorAccent">#31ef34</color>
+    <color name="buttonColor">#a14926</color>
 
-    <color name="collected">#00e676</color>
-    <color name="not_collected">#e60615</color>
+    <color name="collected">#6ff1f1</color>
+    <color name="not_collected">#d65760</color>
 
-    <color name="project_default">#a9a9a9</color>
-    <color name="project_archived">#595959</color>
+    <color name="project_default">#edd98a</color>
+    <color name="project_archived">#917b62</color>
 
     <color name="transparentBlack">#c0000000</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="whellow">#fdfad8</color>
     <color name="yellow">#FFEE35</color>
     <color name="red">#FF0000</color>
     <color name="blue">#4300FF</color>

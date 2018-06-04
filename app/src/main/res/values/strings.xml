@@ -27,6 +27,7 @@
     <string name="hint_base_url">Strona źródłowa</string>
     <string name="hint_id">Identyfikator projektu</string>]
     <string name="hint_name">Twoja nazwa projektu</string>
+    <string name="exit_toast">Naciśnij ponownie by wyjść z aplikacji</string>
 
     <string name="invalid_url">Proszę podać adres url strony</string>
     <string name="invalid_id">Proszę podać id projektu</string>

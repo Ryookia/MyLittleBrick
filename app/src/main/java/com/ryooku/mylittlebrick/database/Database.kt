@@ -164,7 +164,7 @@ public class Database(private val dbHelper: DbHelper) {
             }
             cursor.close()
 
-            cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_CODES} " +
+            cursor = db.rawQuery("Select * FROM ${DbHelper.TABLE_CODES} " +
                     "WHERE ${DbHelper.CODES_ITEM_ID} = '${it.itemId}' AND ${DbHelper.CODES_COLOR_ID} = ${it.color};", null)
             cursor.moveToFirst()
             while (!cursor.isAfterLast) {
@@ -174,7 +174,7 @@ public class Database(private val dbHelper: DbHelper) {
             }
             cursor.close()
             if (it.itemId != null) {
-                cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_PARTS} " +
+                cursor = db.rawQuery("Select * FROM ${DbHelper.TABLE_PARTS} " +
                         "WHERE ${DbHelper.PARTS_CODE} = '${it.itemId}';", null)
                 cursor.moveToFirst()
                 while (!cursor.isAfterLast) {

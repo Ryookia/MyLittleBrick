@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var infoToast: Toast
+    private lateinit var exitToast: Toast
     private var progressVisible: Boolean = false
     private var progressInAnimation: Boolean = false
     lateinit var fragmentHelper: FragmentHelper
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         infoToast = Toast.makeText(this, "", Toast.LENGTH_SHORT)
+        exitToast = Toast.makeText(this, R.string.exit_toast, Toast.LENGTH_SHORT)
         fragmentHelper = FragmentHelper(supportFragmentManager, R.id.mainFrame)
         preferenceHelper = (application as App).preferenceHelper!!
         database = (application as App).database
@@ -80,5 +82,21 @@ class MainActivity : AppCompatActivity() {
         infoToast.setText(message)
         infoToast.duration = duration
         infoToast.show()
+    }
+
+    override fun onBackPressed() {
+        if (progressVisible) return
+        if (fragmentHelper.getBackStackEntryCount() != 0) {
+            fragmentHelper.popBackStack()
+            return
+        }
+        try {
+            if (exitToast.view.isShown)
+                super.onBackPressed()
+            else
+                exitToast.show()
+        } catch (e: Exception) {
+            exitToast.show()
+        }
     }
 }

@@ -53,6 +53,7 @@
 
     <Button
         android:id="@+id/plusCount"
+        style="@style/CommonButton"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
@@ -64,6 +65,7 @@
 
     <Button
         android:id="@+id/minusCount"
+        style="@style/CommonButton"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
