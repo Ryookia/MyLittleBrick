@@ -4,6 +4,13 @@
     <color name="colorPrimaryDark">#7F7A41</color>
     <color name="colorAccent">#4300FF</color>
 
+    <color name="collected">#00e676</color>
+    <color name="not_collected">#e60615</color>
+
+    <color name="project_default">#a9a9a9</color>
+    <color name="project_archived">#595959</color>
+
+    <color name="transparentBlack">#c0000000</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="yellow">#FFEE35</color>

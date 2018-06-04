@@ -2,24 +2,140 @@ package com.ryooku.mylittlebrick.fragments
 
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DefaultItemAnimator
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.TextView
+import android.widget.Toast
 import com.ryooku.mylittlebrick.R
+import com.ryooku.mylittlebrick.activities.MainActivity
+import com.ryooku.mylittlebrick.adapters.ProjectListAdapter
+import com.ryooku.mylittlebrick.async.AsyncXmlFetch
+import com.ryooku.mylittlebrick.database.DbHelper
+import com.ryooku.mylittlebrick.dialogs.AddProjectDialog
+import com.ryooku.mylittlebrick.dialogs.AddProjectListener
+import com.ryooku.mylittlebrick.dialogs.SettingsDialog
+import com.ryooku.mylittlebrick.dialogs.SettingsListener
+import com.ryooku.mylittlebrick.dto.ProjectDTO
+import com.ryooku.mylittlebrick.interfaces.ProjectListListener
+import okhttp3.OkHttpClient
 
 
-/**
- * A simple [Fragment] subclass.
- */
-class ProjectListFragment : Fragment() {
+class ProjectListFragment : Fragment(),
+        AddProjectListener,
+        ProjectListListener,
+        SettingsListener {
 
+    private var projectList: ArrayList<ProjectDTO>? = arrayListOf<ProjectDTO>()
+    private var adapter: ProjectListAdapter? = null
+    private var layout: View? = null;
+
+    companion object {
+        fun newInstance(): ProjectListFragment {
+            return ProjectListFragment()
+        }
+    }
+
+    private val client = OkHttpClient()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_project_list, container, false)
+        layout = inflater.inflate(R.layout.fragment_project_list, container, false)
+        initRecycler()
+        updateLayout()
+        return layout
     }
 
-}// Required empty public constructor
+    override fun onExportSelected(position: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onArchSelected(position: Int) {
+        val projectDTO = projectList!![position]
+        if (projectDTO.isActive == null || projectDTO.isActive == 0) {
+            projectDTO.isActive = 1
+            (activity as MainActivity).database!!.changeArchiveStatus(projectDTO.projectId!!, 1)
+        } else {
+            projectDTO.isActive = 0
+            (activity as MainActivity).database!!.changeArchiveStatus(projectDTO.projectId!!, 0)
+        }
+        adapter!!.notifyDataSetChanged()
+    }
+
+    override fun onItemSelected(position: Int) {
+        (activity as MainActivity).fragmentHelper.setProjectFragment(projectList!![position].projectId!!)
+    }
+
+    override fun onUrlChanged(url: String) {
+        (activity as MainActivity).preferenceHelper.setDefaultUrl(url)
+    }
+
+    private fun updateLayout() {
+        projectList!!.clear()
+        projectList!!.addAll((activity as MainActivity).database!!.getProjectListWithoutItems())
+        initLayout()
+    }
+
+    override fun onAccept(url: String, id: String, name: String) {
+        val asyncAction = AsyncXmlFetch(this::preFetchAction, this::postFetchAction)
+        asyncAction.execute(url, id, name)
+    }
+
+    private fun preFetchAction() {
+        if (activity == null) return
+        (activity as MainActivity).showProgressLayout(R.string.project_fetch_start)
+    }
+
+    private fun postFetchAction(result: ProjectDTO?) {
+        if (activity == null) return
+        val act = (activity as MainActivity)
+        act.hideProgressLayout()
+        if (result == null)
+            act.showMessageToast(R.string.project_fetch_fail, Toast.LENGTH_LONG)
+        else
+            act.showMessageToast(R.string.project_fetch_succ, Toast.LENGTH_LONG)
+        if (act.database!!.alreadyInDB(DbHelper.TABLE_INVENTORY, DbHelper.INVENTORY_ID, result!!.projectId.toString())) {
+            act.showMessageToast(R.string.project_already_exists, Toast.LENGTH_LONG)
+            return
+        }
+        act.database!!.addProject(result)
+        updateLayout()
+    }
+
+
+    private fun initLayout() {
+        if (context == null) return
+        layout!!.findViewById<FloatingActionButton>(R.id.addFab).setOnClickListener {
+            AddProjectDialog(activity!!, this).show()
+        }
+        layout!!.findViewById<FloatingActionButton>(R.id.archFab).setOnClickListener {
+            adapter!!.showArchived = !adapter!!.showArchived;
+            adapter!!.notifyDataSetChanged()
+        }
+        layout!!.findViewById<FloatingActionButton>(R.id.settingsFab).setOnClickListener {
+            SettingsDialog(activity!!, this).show()
+        }
+        val infoText = layout!!.findViewById<TextView>(R.id.infoText)
+        if (projectList!!.isEmpty()) {
+            infoText.visibility = View.VISIBLE
+        } else {
+            infoText.visibility = View.GONE
+            adapter!!.notifyDataSetChanged()
+        }
+
+    }
+
+    private fun initRecycler() {
+        val layoutManager = LinearLayoutManager(context)
+        val recyclerView = layout!!.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
+        adapter = ProjectListAdapter(context!!, projectList!!, this)
+        recyclerView.adapter = adapter
+    }
+}

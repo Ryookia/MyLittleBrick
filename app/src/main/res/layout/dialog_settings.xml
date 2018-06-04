@@ -7,35 +7,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/add_new_project_desc"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:layout_gravity="start"
+        android:text="@string/hint_base_url" />
 
     <EditText
         android:id="@+id/urlInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="@string/hint_base_url"
+        android:hint="@string/url_base_hint"
         android:inputType="textUri" />
-
-    <EditText
-        android:id="@+id/idInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="@string/hint_id"
-        android:inputType="number" />
-
-    <EditText
-        android:id="@+id/nameInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:hint="@string/hint_name"
-        android:inputType="textAutoCorrect" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,14 +26,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/cancel_project_button" />
+            android:text="@string/settings_cancel" />
 
         <Button
             android:id="@+id/acceptButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/add_project_button" />
+            android:text="@string/settings_save_settings" />
 
     </LinearLayout>
 

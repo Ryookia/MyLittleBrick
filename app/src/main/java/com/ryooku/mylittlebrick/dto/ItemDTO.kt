@@ -1,6 +1,7 @@
 package com.ryooku.mylittlebrick.dto
 
 class ItemDTO {
+    public var id: Int? = null
     public var projectId: Int? = null
     public var itemType: String? = null
     public var itemId: String? = null

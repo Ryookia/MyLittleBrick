@@ -2,13 +2,31 @@
     <string name="app_name">MyLittleBrick</string>
 
     <string name="arch_button_desc">Archiwizuj</string>
+    <string name="re_arch_button_desc">Przywróc</string>
     <string name="export_button_desc">Eksportuj</string>
     <string name="add_new_project_desc">Dodaj nowy projekt</string>
+    <string name="add_project_button">Dodaj projekt</string>
+    <string name="cancel_project_button">Anuluj</string>
+    <string name="project_fetch_succ">Projekt został dodany</string>
+    <string name="project_fetch_fail">Wystąpił błąd przy pobieraniu projektu</string>
+    <string name="project_fetch_start">Pobieranie Projektu</string>
+    <string name="project_already_exists">Projekt jest już pobrany</string>
+    <string name="settings_save_settings">Zapisz</string>
+    <string name="settings_cancel">Anuluj</string>
 
     <string name="hint_base_url">Strona źródłowa</string>
     <string name="hint_id">Identyfikator projektu</string>]
     <string name="hint_name">Twoja nazwa projektu</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="invalid_url">Proszę podać adres url strony</string>
+    <string name="invalid_id">Proszę podać id projektu</string>
+    <string name="invalid_name">Proszę podać nazwę projektu</string>
+    <string name="unknown_error">Wystąpił nieznany błąd</string>
+
+    <string name="no_project_so_far">Brak pobranych projektów</string>
+    <string name="plus_symbol">+</string>
+    <string name="minus_symbol">-</string>
+    <string name="url_base_hint">Baza adresu URL</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

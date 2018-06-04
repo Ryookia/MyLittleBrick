@@ -2,7 +2,6 @@ package com.ryooku.mylittlebrick.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
 import android.support.annotation.NonNull
 import com.ryooku.mylittlebrick.application.AppConfig
@@ -12,13 +11,30 @@ import java.io.FileOutputStream
 public class DbHelper(@NonNull private val context: Context, private val databasePath: String, private val dBName: String, databaseVersion: Int)
     : SQLiteOpenHelper(context, dBName, null, databaseVersion) {
 
+    companion object {
+        const val TABLE_INVENTORY = "Inventories"
+        const val INVENTORY_ID = "_id"
+        const val INVENTORY_NAME = "Name"
+        const val INVENTORY_ACTIVE = "Active"
+        const val INVENTORY_LAST_ACCESS = "LastAccessed"
+        const val TABLE_INVENTORY_ITEM = "InventoriesParts"
+        const val INVENTORY_ITEM_ID = "_id"
+        const val INVENTORY_ITEM_INVENTORY_ID = "InventoryID"
+        const val INVENTORY_ITEM_TYPE = "TypeID"
+        const val INVENTORY_ITEM_ITEM = "ItemID"
+        const val INVENTORY_ITEM_COUNT_DESIRE = "QuantityInSet"
+        const val INVENTORY_ITEM_COUNT = "QuantityInStore"
+        const val INVENTORY_ITEM_COLOR = "ColorID"
+        const val INVENTORY_ITEM_EXTRA = "Extra"
+    }
+
     public var database: SQLiteDatabase? = null
 
     public fun create() {
         if (dBExists()) {
 
         } else {
-            this.readableDatabase
+            this.writableDatabase
 
             try {
                 copyDataBase()
@@ -31,9 +47,9 @@ public class DbHelper(@NonNull private val context: Context, private val databas
     private fun dBExists(): Boolean {
         var database: SQLiteDatabase? = null
         try {
-            database = SQLiteDatabase.openDatabase(databasePath + dBName, null, SQLiteDatabase.OPEN_READONLY)
+            database = SQLiteDatabase.openDatabase(databasePath + dBName, null, SQLiteDatabase.OPEN_READWRITE)
             return true
-        } catch (e: SQLiteException) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
 
@@ -62,7 +78,7 @@ public class DbHelper(@NonNull private val context: Context, private val databas
     }
 
     public fun openDatabase() {
-        database = SQLiteDatabase.openDatabase(databasePath + dBName, null, SQLiteDatabase.OPEN_READONLY)
+        database = SQLiteDatabase.openDatabase(databasePath + dBName, null, SQLiteDatabase.OPEN_READWRITE)
     }
 
 
