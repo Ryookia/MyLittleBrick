@@ -20,26 +20,36 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/desiredCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:text="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/thumbnail"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/currentCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        android:text="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/desiredCount"
+        app:layout_constraintStart_toEndOf="@id/thumbnail"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/countSeparator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:text="@string/count_separator"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/currentCount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/desiredCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/countSeparator"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/plusCount"
@@ -49,7 +59,7 @@
         android:layout_marginStart="4dp"
         android:text="@string/plus_symbol"
         app:layout_constraintBottom_toTopOf="@id/minusCount"
-        app:layout_constraintStart_toEndOf="@id/currentCount"
+        app:layout_constraintStart_toEndOf="@id/desiredCount"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -60,7 +70,7 @@
         android:layout_marginStart="4dp"
         android:text="@string/minus_symbol"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/currentCount"
+        app:layout_constraintStart_toEndOf="@id/desiredCount"
         app:layout_constraintTop_toBottomOf="@id/plusCount" />
 
     <TextView
@@ -69,19 +79,19 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        android:text="bialy"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/plusCount"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/id"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
-        android:text="id 1"
+        android:gravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/color"
         app:layout_constraintTop_toTopOf="parent" />
 

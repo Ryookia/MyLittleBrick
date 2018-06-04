@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.ryooku.mylittlebrick.R
 import com.ryooku.mylittlebrick.activities.MainActivity
 import com.ryooku.mylittlebrick.adapters.ProjectAdapter
+import com.ryooku.mylittlebrick.dto.ItemMetaDTO
 import com.ryooku.mylittlebrick.dto.ProjectDTO
 import com.ryooku.mylittlebrick.interfaces.ItemListener
 
@@ -32,6 +33,7 @@ class ProjectFragment : Fragment(), ItemListener {
 
     private var projectId: Int? = null
     private var projectDTO: ProjectDTO? = null
+    private var itemMetaList: ArrayList<ItemMetaDTO>? = null
     private var adapter: ProjectAdapter? = null
 
     private var layout: View? = null
@@ -68,6 +70,8 @@ class ProjectFragment : Fragment(), ItemListener {
         projectId = arguments!!.getInt(ARG_PROJECT_ID)
         if (projectId == null) return
         projectDTO = (activity as MainActivity).database!!.getProjectById(projectId!!)
+        if (projectDTO != null)
+            itemMetaList = (activity as MainActivity).database!!.getItemMetaData(projectDTO!!)
     }
 
 
@@ -77,7 +81,7 @@ class ProjectFragment : Fragment(), ItemListener {
         val recyclerView = layout!!.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
-        adapter = ProjectAdapter(projectDTO!!.itemList!!, context!!, this)
+        adapter = ProjectAdapter(projectDTO!!.itemList!!, context!!, itemMetaList!!, this)
         recyclerView.adapter = adapter
     }
 

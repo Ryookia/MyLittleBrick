@@ -3,6 +3,7 @@ package com.ryooku.mylittlebrick.database;
 import android.content.ContentValues
 import android.database.Cursor
 import com.ryooku.mylittlebrick.dto.ItemDTO
+import com.ryooku.mylittlebrick.dto.ItemMetaDTO
 import com.ryooku.mylittlebrick.dto.ProjectDTO
 
 public class Database(private val dbHelper: DbHelper) {
@@ -125,7 +126,46 @@ public class Database(private val dbHelper: DbHelper) {
         return project
     }
 
-    fun getItemList(projectId: Int): List<ItemDTO> {
+    fun getItemMetaData(project: ProjectDTO): ArrayList<ItemMetaDTO> {
+        val result = ArrayList<ItemMetaDTO>()
+        val db = dbHelper.database
+
+        project.itemList!!.forEach {
+            val meta = ItemMetaDTO()
+            var cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_COLORS} WHERE ${DbHelper.COLORS_CODE_ID} = ${it.color};", null)
+            cursor.moveToFirst()
+            while (!cursor.isAfterLast) {
+                meta.colorName = cursor.getString(cursor.getColumnIndex(DbHelper.COLORS_NAME))
+                break
+            }
+            cursor.close()
+
+            cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_CODES} " +
+                    "WHERE ${DbHelper.CODES_ITEM_ID} = '${it.itemId}' AND ${DbHelper.CODES_COLOR_ID} = ${it.color};", null)
+            cursor.moveToFirst()
+            while (!cursor.isAfterLast) {
+                meta.designId = cursor.getInt(cursor.getColumnIndex(DbHelper.CODES_CODE))
+                meta.image = cursor.getBlob(cursor.getColumnIndex(DbHelper.CODES_IMAGE))
+                break
+            }
+            cursor.close()
+            if (it.itemId != null) {
+                cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_PARTS} " +
+                        "WHERE ${DbHelper.PARTS_CODE} = '${it.itemId}';", null)
+                cursor.moveToFirst()
+                while (!cursor.isAfterLast) {
+                    meta.blockName = cursor.getString(cursor.getColumnIndex(DbHelper.PARTS_NAME))
+                    break
+                }
+                cursor.close()
+            }
+            result.add(meta)
+        }
+        return result
+
+    }
+
+    private fun getItemList(projectId: Int): List<ItemDTO> {
         val db = dbHelper.database
         val cursor = db!!.rawQuery("Select * FROM ${DbHelper.TABLE_INVENTORY_ITEM} WHERE ${DbHelper.INVENTORY_ITEM_INVENTORY_ID} = $projectId", null)
         val result = mutableListOf<ItemDTO>()
@@ -134,6 +174,7 @@ public class Database(private val dbHelper: DbHelper) {
             val item = ItemDTO()
             item.id = cursor.getInt(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_ID))
             item.projectId = projectId
+            item.itemId = cursor.getString(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_ITEM))
             item.itemType = cursor.getString(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_TYPE))
             item.collectedCount = cursor.getInt(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_COUNT))
             item.desiredCount = cursor.getInt(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_COUNT_DESIRE))

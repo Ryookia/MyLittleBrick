@@ -13,6 +13,10 @@
     <string name="project_already_exists">Projekt jest już pobrany</string>
     <string name="settings_save_settings">Zapisz</string>
     <string name="settings_cancel">Anuluj</string>
+    <string name="export_save">Exportuj</string>
+    <string name="export_cancel">Anuluj</string>
+    <string name="export_successful">Eksport pliku zakończony sukcesem</string>
+    <string name="count_separator">/</string>
 
     <string name="hint_base_url">Strona źródłowa</string>
     <string name="hint_id">Identyfikator projektu</string>]
@@ -26,6 +30,7 @@
     <string name="no_project_so_far">Brak pobranych projektów</string>
     <string name="plus_symbol">+</string>
     <string name="minus_symbol">-</string>
+    <string name="name_file_hint">Nazwa pliku wyjściowego</string>
     <string name="url_base_hint">Baza adresu URL</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>

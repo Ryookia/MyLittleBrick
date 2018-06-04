@@ -12,6 +12,17 @@ public class DbHelper(@NonNull private val context: Context, private val databas
     : SQLiteOpenHelper(context, dBName, null, databaseVersion) {
 
     companion object {
+        const val TABLE_CODES = "Codes"
+        const val CODES_ITEM_ID = "ItemID"
+        const val CODES_COLOR_ID = "ColorID"
+        const val CODES_IMAGE = "Image"
+        const val CODES_CODE = "Code"
+        const val TABLE_COLORS = "Colors"
+        const val COLORS_CODE_ID = "Code"
+        const val COLORS_NAME = "Name"
+        const val TABLE_PARTS = "Parts"
+        const val PARTS_CODE = "Code"
+        const val PARTS_NAME = "Name"
         const val TABLE_INVENTORY = "Inventories"
         const val INVENTORY_ID = "_id"
         const val INVENTORY_NAME = "Name"

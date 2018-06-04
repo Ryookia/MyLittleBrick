@@ -13,10 +13,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ryooku.mylittlebrick.R
 import com.ryooku.mylittlebrick.dto.ItemDTO
+import com.ryooku.mylittlebrick.dto.ItemMetaDTO
 import com.ryooku.mylittlebrick.interfaces.ItemListener
 
 
-class ProjectAdapter(private val itemList: List<ItemDTO>, private val context: Context, private val listener: ItemListener)
+class ProjectAdapter(private val itemList: List<ItemDTO>,
+                     private val context: Context,
+                     private val metaList: ArrayList<ItemMetaDTO>,
+                     private val listener: ItemListener)
     : RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectAdapter.ViewHolder {
@@ -30,10 +34,17 @@ class ProjectAdapter(private val itemList: List<ItemDTO>, private val context: C
 
     override fun onBindViewHolder(holder: ProjectAdapter.ViewHolder, position: Int) {
         val item = itemList[position]
+        val meta = metaList[position]
         holder.desiredCount.text = item.desiredCount.toString()
         holder.currentCount.text = item.collectedCount.toString()
-        holder.color.text = item.color.toString()
-        holder.id.text = item.id.toString()
+        if (meta.colorName != null)
+            holder.color.text = meta.colorName
+        else
+            holder.color.text = item.color
+        if (meta.blockName != null)
+            holder.id.text = meta.blockName
+        else
+            holder.id.text = item.id.toString()
         holder.plusButton.setOnClickListener { listener.increase(position) }
         holder.minusButton.setOnClickListener { listener.decrease(position) }
         holder.layout.setOnClickListener { listener.itemSelected(position) }

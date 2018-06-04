@@ -1,9 +1,12 @@
 package com.ryooku.mylittlebrick.fragments
 
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,25 +20,27 @@ import com.ryooku.mylittlebrick.activities.MainActivity
 import com.ryooku.mylittlebrick.adapters.ProjectListAdapter
 import com.ryooku.mylittlebrick.async.AsyncXmlFetch
 import com.ryooku.mylittlebrick.database.DbHelper
-import com.ryooku.mylittlebrick.dialogs.AddProjectDialog
-import com.ryooku.mylittlebrick.dialogs.AddProjectListener
-import com.ryooku.mylittlebrick.dialogs.SettingsDialog
-import com.ryooku.mylittlebrick.dialogs.SettingsListener
+import com.ryooku.mylittlebrick.dialogs.*
 import com.ryooku.mylittlebrick.dto.ProjectDTO
 import com.ryooku.mylittlebrick.interfaces.ProjectListListener
+import com.ryooku.mylittlebrick.utils.XmlExporter
 import okhttp3.OkHttpClient
 
 
 class ProjectListFragment : Fragment(),
         AddProjectListener,
         ProjectListListener,
-        SettingsListener {
+        SettingsListener,
+        ExportListener {
 
     private var projectList: ArrayList<ProjectDTO>? = arrayListOf<ProjectDTO>()
     private var adapter: ProjectListAdapter? = null
     private var layout: View? = null;
+    private var currentPosition: Int = -1
 
     companion object {
+        const val WRITE_EXTERNAL_CODE = 101
+
         fun newInstance(): ProjectListFragment {
             return ProjectListFragment()
         }
@@ -52,7 +57,20 @@ class ProjectListFragment : Fragment(),
     }
 
     override fun onExportSelected(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        currentPosition = position
+        if (checkSelfPermission(context!!, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), WRITE_EXTERNAL_CODE)
+            return
+        }
+        handleExport(position)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != WRITE_EXTERNAL_CODE) return
+        if (permissions.isEmpty()) return
+        if (permissions[0] == android.Manifest.permission.WRITE_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            handleExport(currentPosition)
     }
 
     override fun onArchSelected(position: Int) {
@@ -75,9 +93,21 @@ class ProjectListFragment : Fragment(),
         (activity as MainActivity).preferenceHelper.setDefaultUrl(url)
     }
 
+    override fun onNameSelected(name: String) {
+        XmlExporter.exportToXml(projectList!![currentPosition], Environment.getExternalStorageDirectory().absolutePath, name)
+        (activity as MainActivity).showMessageToast(R.string.export_successful, Toast.LENGTH_LONG)
+    }
+
+    private fun handleExport(position: Int) {
+        if (currentPosition == -1) return
+        currentPosition = position
+        ExportDialog(activity!!, this).show()
+    }
+
+
     private fun updateLayout() {
         projectList!!.clear()
-        projectList!!.addAll((activity as MainActivity).database!!.getProjectListWithoutItems())
+        projectList!!.addAll((activity as MainActivity).database!!.getProjectList())
         initLayout()
     }
 
