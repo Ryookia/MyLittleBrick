@@ -26,6 +26,30 @@ public class Database(private val dbHelper: DbHelper) {
         cursor.close()
     }
 
+    @Synchronized
+    fun getImageByteArray(inventoryItemId: Int): ByteArray? {
+        val db = dbHelper.database
+        val cursor = db!!.rawQuery("SELECT * FROM ${DbHelper.TABLE_INVENTORY_ITEM} WHERE ${DbHelper.INVENTORY_ITEM_ID} = $inventoryItemId;", null)
+        cursor.moveToFirst()
+        var result: ByteArray? = null
+        while (!cursor.isAfterLast) {
+            result = cursor.getBlob(cursor.getColumnIndex(DbHelper.INVENTORY_ITEM_IMAGE))
+            break
+        }
+        cursor.close()
+        return result
+    }
+
+    @Synchronized
+    fun saveImageByteArray(inventoryItemId: Int, byteArray: ByteArray) {
+        val writable = dbHelper.database
+        val values = ContentValues()
+
+        values.put(DbHelper.INVENTORY_ITEM_IMAGE, byteArray)
+
+        writable!!.update(DbHelper.TABLE_INVENTORY_ITEM, values, "${DbHelper.INVENTORY_ITEM_ID} = ?", arrayOf(inventoryItemId.toString()))
+    }
+
     fun printTables() {
         val cursor = dbHelper.database!!.rawQuery("SELECT name FROM sqlite_master WHERE type='table';", null)
         cursor.moveToFirst();

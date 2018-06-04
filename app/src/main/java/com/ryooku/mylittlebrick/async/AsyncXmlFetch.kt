@@ -6,6 +6,7 @@ import com.ryooku.mylittlebrick.dto.ItemDTO
 import com.ryooku.mylittlebrick.dto.ProjectDTO
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import javax.xml.parsers.DocumentBuilderFactory
@@ -20,7 +21,13 @@ class AsyncXmlFetch(private val preAction: () -> Unit, private val postAction: (
     override fun doInBackground(vararg params: String?): ProjectDTO? {
         Request.Builder().url("${params[0]}/${params[1]}.xml").build().also {
             val client = OkHttpClient()
-            val response = client.newCall(it).execute()
+            val response: Response
+            try {
+                response = client.newCall(it).execute()
+            } catch (e: Exception) {
+                return null
+            }
+
             if (!response.isSuccessful) {
                 Log.e("ProjectListFragment", response.body().toString())
                 return null

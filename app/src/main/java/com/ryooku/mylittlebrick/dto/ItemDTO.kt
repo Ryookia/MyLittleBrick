@@ -12,4 +12,6 @@ class ItemDTO {
     public var alternate: String? = null
     public var matchId: String? = null
     public var counterPart: String? = null
+    public var image: ByteArray? = null
+    public var metaData: ItemMetaDTO? = null
 }

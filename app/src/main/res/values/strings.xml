@@ -7,7 +7,9 @@
     <string name="add_new_project_desc">Dodaj nowy projekt</string>
     <string name="add_project_button">Dodaj projekt</string>
     <string name="cancel_project_button">Anuluj</string>
-    <string name="project_fetch_succ">Projekt został dodany</string>
+    <string name="project_fetch_succ">Projekt został pobrany</string>
+    <string name="project_save_desc">Zapisywanie projektu</string>
+    <string name="project_load_desc">Wczytywanie projektu, proszę czekać</string>
     <string name="project_fetch_fail">Wystąpił błąd przy pobieraniu projektu</string>
     <string name="project_fetch_start">Pobieranie Projektu</string>
     <string name="project_already_exists">Projekt jest już pobrany</string>
@@ -17,6 +19,10 @@
     <string name="export_cancel">Anuluj</string>
     <string name="export_successful">Eksport pliku zakończony sukcesem</string>
     <string name="count_separator">/</string>
+    <string name="fetching_project">Pobieranie projektu</string>
+    <string name="fetching_images">Pobieranie obrazków</string>
+    <string name="sort_by_type_desc">Sortuj po typie</string>
+    <string name="sort_by_color_desc">Sortuj po kolorze</string>
 
     <string name="hint_base_url">Strona źródłowa</string>
     <string name="hint_id">Identyfikator projektu</string>]

@@ -37,6 +37,7 @@ public class DbHelper(@NonNull private val context: Context, private val databas
         const val INVENTORY_ITEM_COUNT = "QuantityInStore"
         const val INVENTORY_ITEM_COLOR = "ColorID"
         const val INVENTORY_ITEM_EXTRA = "Extra"
+        const val INVENTORY_ITEM_IMAGE = "Image"
     }
 
     public var database: SQLiteDatabase? = null

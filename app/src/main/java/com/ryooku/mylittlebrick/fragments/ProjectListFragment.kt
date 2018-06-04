@@ -18,11 +18,15 @@ import android.widget.Toast
 import com.ryooku.mylittlebrick.R
 import com.ryooku.mylittlebrick.activities.MainActivity
 import com.ryooku.mylittlebrick.adapters.ProjectListAdapter
+import com.ryooku.mylittlebrick.application.AppConfig
+import com.ryooku.mylittlebrick.async.AsyncImageFetch
+import com.ryooku.mylittlebrick.async.AsyncProjectSave
 import com.ryooku.mylittlebrick.async.AsyncXmlFetch
 import com.ryooku.mylittlebrick.database.DbHelper
 import com.ryooku.mylittlebrick.dialogs.*
 import com.ryooku.mylittlebrick.dto.ProjectDTO
 import com.ryooku.mylittlebrick.interfaces.ProjectListListener
+import com.ryooku.mylittlebrick.utils.SynchronizedCounter
 import com.ryooku.mylittlebrick.utils.XmlExporter
 import okhttp3.OkHttpClient
 
@@ -37,6 +41,7 @@ class ProjectListFragment : Fragment(),
     private var adapter: ProjectListAdapter? = null
     private var layout: View? = null;
     private var currentPosition: Int = -1
+    private val counter = SynchronizedCounter()
 
     companion object {
         const val WRITE_EXTERNAL_CODE = 101
@@ -112,6 +117,7 @@ class ProjectListFragment : Fragment(),
     }
 
     override fun onAccept(url: String, id: String, name: String) {
+        (activity as MainActivity).showProgressLayout(R.string.fetching_project)
         val asyncAction = AsyncXmlFetch(this::preFetchAction, this::postFetchAction)
         asyncAction.execute(url, id, name)
     }
@@ -124,19 +130,73 @@ class ProjectListFragment : Fragment(),
     private fun postFetchAction(result: ProjectDTO?) {
         if (activity == null) return
         val act = (activity as MainActivity)
-        act.hideProgressLayout()
-        if (result == null)
+        if (result == null) {
             act.showMessageToast(R.string.project_fetch_fail, Toast.LENGTH_LONG)
-        else
-            act.showMessageToast(R.string.project_fetch_succ, Toast.LENGTH_LONG)
-        if (act.database!!.alreadyInDB(DbHelper.TABLE_INVENTORY, DbHelper.INVENTORY_ID, result!!.projectId.toString())) {
-            act.showMessageToast(R.string.project_already_exists, Toast.LENGTH_LONG)
+            act.hideProgressLayout()
             return
         }
-        act.database!!.addProject(result)
+        else
+            act.showMessageToast(R.string.project_fetch_succ, Toast.LENGTH_LONG)
+        if (act.database!!.alreadyInDB(DbHelper.TABLE_INVENTORY, DbHelper.INVENTORY_ID, result.projectId.toString())) {
+            act.showMessageToast(R.string.project_already_exists, Toast.LENGTH_LONG)
+            act.hideProgressLayout()
+            return
+        }
+        act.showProgressLayout(R.string.project_save_desc)
+        AsyncProjectSave(act.database!!, this::preSave, this::postSave).execute(result)
+    }
+
+    private fun fetchImages(project: ProjectDTO?) {
+        if (project == null) return
+        (activity as MainActivity).showProgressLayout(R.string.fetching_images)
+        var position = 0
+        counter.setValue(project.itemList!!.size)
+        project.itemList!!.forEach {
+            var designId = it.metaData!!.designId
+            position++
+            if (designId == null) designId = 0
+            val firstUrl: String?
+            if (designId != 0)
+                firstUrl = "${AppConfig.DEFAULT_IMAGE_SOURCE}$designId"
+            else
+                firstUrl = null
+            val urlRequest: String?
+            if (it.itemType != null || it.color != null || it.itemId != null)
+                urlRequest = "${AppConfig.ALT_IMAGE_SOURCE}${it.itemType}/${it.color}/${it.itemId}.gif"
+            else
+                urlRequest = null
+            val lastResort: String?
+            if (it.itemId != null)
+                lastResort = "${AppConfig.THIRD_IMAGE_SOURCE}${it.itemId}.jpg"
+            else
+                lastResort = null
+            println("EXE ASYNC IMAGE FETCH")
+            AsyncImageFetch(this::preFetch, this::postFetch, it.id!!)
+                    .execute(3.toString(), firstUrl, urlRequest, lastResort)
+        }
+    }
+
+    private fun preSave() {
+
+    }
+
+    private fun postSave(projectDTO: ProjectDTO?) {
+        fetchImages(projectDTO)
         updateLayout()
     }
 
+    private fun preFetch() {}
+    private fun postFetch(inventoryItemId: Int, result: ByteArray?) {
+        counter.decreaseCounter()
+        if (result == null) return
+        val act = (activity as MainActivity?)
+        act?.database?.saveImageByteArray(inventoryItemId, result)
+        act?.showProgressLayout("${getString(R.string.fetching_images)} pozostało: ${counter.getValue()}")
+        if (counter.getValue() == 0) {
+            updateLayout()
+            act?.hideProgressLayout()
+        }
+    }
 
     private fun initLayout() {
         if (context == null) return

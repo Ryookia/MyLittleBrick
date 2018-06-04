@@ -81,21 +81,4 @@ class MainActivity : AppCompatActivity() {
         infoToast.duration = duration
         infoToast.show()
     }
-
-//    private fun makeRequest() {
-//        Request.Builder().url(urlInput.text.toString()).build().also {
-//            val response = client.newCall(it).execute()
-//            if (!response.isSuccessful) {
-//                Toast.makeText(this, "We fucked up", Toast.LENGTH_LONG).show()
-//                Log.e("MainActivity", response.body().toString())
-//                return
-//            }
-//            val body = response.body()!!
-//            val stream = body.byteStream()
-//            val bitmap = BitmapFactory.decodeStream(stream)
-//            stream.close()
-//            imageHolder.setImageBitmap(bitmap)
-//        }
-//
-//    }
 }

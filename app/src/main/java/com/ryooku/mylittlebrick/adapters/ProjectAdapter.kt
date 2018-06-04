@@ -2,6 +2,8 @@ package com.ryooku.mylittlebrick.adapters
 
 import android.animation.ArgbEvaluator
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.ColorDrawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -12,16 +14,18 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.ryooku.mylittlebrick.R
+import com.ryooku.mylittlebrick.database.Database
 import com.ryooku.mylittlebrick.dto.ItemDTO
-import com.ryooku.mylittlebrick.dto.ItemMetaDTO
 import com.ryooku.mylittlebrick.interfaces.ItemListener
 
 
-class ProjectAdapter(private val itemList: List<ItemDTO>,
+class ProjectAdapter(private var itemList: List<ItemDTO>,
                      private val context: Context,
-                     private val metaList: ArrayList<ItemMetaDTO>,
+                     private val database: Database,
                      private val listener: ItemListener)
     : RecyclerView.Adapter<ProjectAdapter.ViewHolder>() {
+
+    private val defaultThumbnail = ContextCompat.getDrawable(context, R.mipmap.ic_launcher)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectAdapter.ViewHolder {
         return ProjectAdapter.ViewHolder(
@@ -34,7 +38,7 @@ class ProjectAdapter(private val itemList: List<ItemDTO>,
 
     override fun onBindViewHolder(holder: ProjectAdapter.ViewHolder, position: Int) {
         val item = itemList[position]
-        val meta = metaList[position]
+        val meta = item.metaData!!
         holder.desiredCount.text = item.desiredCount.toString()
         holder.currentCount.text = item.collectedCount.toString()
         if (meta.colorName != null)
@@ -49,6 +53,16 @@ class ProjectAdapter(private val itemList: List<ItemDTO>,
         holder.minusButton.setOnClickListener { listener.decrease(position) }
         holder.layout.setOnClickListener { listener.itemSelected(position) }
 
+        val imageByteArray = database.getImageByteArray(item.id!!)
+        if (imageByteArray == null)
+            holder.thumbnail.setImageDrawable(defaultThumbnail)
+        else {
+            val image = imageFromArray(imageByteArray)
+            if (image == null)
+                holder.thumbnail.setImageDrawable(defaultThumbnail)
+            else
+                holder.thumbnail.setImageBitmap(image)
+        }
         if (item.collectedCount == 0) holder.minusButton.visibility = View.INVISIBLE
         else holder.minusButton.visibility = View.VISIBLE
 
@@ -59,6 +73,16 @@ class ProjectAdapter(private val itemList: List<ItemDTO>,
         holder.layout.background = ColorDrawable(
                 ArgbEvaluator().evaluate(value, ContextCompat.getColor(context, R.color.not_collected), ContextCompat.getColor(context, R.color.collected)) as Int
         )
+    }
+
+    private fun imageFromArray(byteArray: ByteArray?): Bitmap? {
+        if (byteArray == null) return null
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+    fun setData(data: List<ItemDTO>) {
+        itemList = data
+        notifyDataSetChanged()
     }
 
     class ViewHolder : RecyclerView.ViewHolder {

@@ -11,9 +11,9 @@ interface AppConfig {
         const val DEFAULT_HOST = "http://fcds.cs.put.poznan.pl/MyWeb/BL"
         const val FILE_EXTENSION = ".xml"
 
-        const val DEFAULT_IMAGE_SOURCE = "https://www.lego.com/service/bricks/"
+        const val DEFAULT_IMAGE_SOURCE = "https://www.lego.com/service/bricks/5/2/"
         const val ALT_IMAGE_SOURCE = "http://img.bricklink.com/"
-        const val THIRD_IMAGE_SOURCE = "http://bricklink.com/"
+        const val THIRD_IMAGE_SOURCE = "http://bricklink.com/PL/"
     }
 
 }
